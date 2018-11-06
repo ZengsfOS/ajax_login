@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/js/common.js"></script>
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script>
+        $(function(){
+            {#这里通过jquery选择器获取到登录名称的文本框，当失去焦点时需要做相对应的事情#}
+            $("[name='loginname']").blur(function () {
+                //1.获取xhr
+                var xhr = fun()
+                //2.创建请求
+                // 获取到文本框里面的内容
+                var lname = this.value;
+                // 然后在拼接url
+                var url = "/01-server?lname=" + lname
+                xhr.open("get", url, true)
+                //3.设置回调函数
+                xhr.onreadystatechange = function () {
+                    // 如果请求状态码为200且相应以完成的话，就把服务器返回的数据放到span标签里
+                    if(xhr.readyState ==4 && xhr.status == 200){
+
+                        $("#loginnameshow").html(xhr.responseText)
+                    }
+                }
+                //4.发送请求
+                xhr.send(null)
+            })
+        })
+    </script>
+</head>
+<body>
+    <form action="/login/" method="post">
+        <p>
+            登录名称：<input type="text" name="loginname">
+            <span id="loginnameshow"></span>
+        </p>
+        <p>
+            登录密码：<input type="password" name="loginpwd">
+        </p>
+        <p>
+            用户名称：<input type="text" name="uname">
+        </p>
+        <p>
+            <input type="submit" value="注册">
+        </p>
+    </form>
+</body>
+</html>
