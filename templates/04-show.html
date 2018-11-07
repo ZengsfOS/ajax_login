@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/static/js/common.js"></script>
+    <script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+    <script>
+        function loadUsers() {
+            var xhr = fun();
+            xhr.open("get", "/04-server", true);
+            xhr.onreadystatechange = function () {
+                if(xhr.readyState == 4 && xhr.status == 200){
+                    var resText = xhr.responseText;
+                    var arr = JSON.parse(resText);
+                    var html = "";
+                    $.each(arr, function (i, obj) {
+                        html += "<tr>";
+                        html += "<td>" + obj.loginname + "</td>";
+                        html += "<td>" + obj.loginpwd + "</td>";
+                        html += "<td>" + obj.username + "</td>";
+                        html += "<td><button onclick='delUser(" + obj.id + ")'>删除</button></td>";
+                        html += "</tr>";
+                    });
+                    $("#tbody").html(html)
+                };
+            };
+            xhr.send(null);
+        };
+
+        function delUser(id) {
+            if(window.confirm("要删除吗？")){
+                //ajax  异步删除
+                //1. 获取xhr
+                var xhr = fun();
+                //2. 创建请求
+                var url = "/04-delete?id=" + id;
+                xhr.open("get", url, true);
+                //3. 设置回调
+                xhr.onreadystatechange = function () {
+                    if(xhr.readyState ==4 && xhr.status == 200){
+                        var obj = JSON.parse(xhr.responseText)
+                        if(obj.status == 1){
+                            alert(obj.msg);
+                            // 刷新表格中的数据
+                            loadUsers();
+                        }
+                        else{
+                            alert(obj.msg);
+                        }
+                    }
+                }
+                //4. 发送请求
+                xhr.send(null)
+            }
+        }
+
+        $(function () {
+            loadUsers()
+        })
+
+
+    </script>
+</head>
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>登录名</th>
+                <th>登录密码</th>
+                <th>用户名称</th>
+                <th>删除</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+
+        </tbody>
+    </table>
+</body>
+</html>
